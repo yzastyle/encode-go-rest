@@ -1,0 +1,212 @@
+# Go-специфичные файлы
+# Исполняемые файлы
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
+/dist/
+
+# Тестовые бинарники
+*.test
+
+# Покрытие кода
+*.out
+coverage.txt
+coverage.html
+coverage.xml
+
+# Go workspace файлы
+go.work
+go.work.sum
+
+# Vendor папка (если используется)
+/vendor/
+
+# Зависимости модулей (обычно не нужно коммитить)
+# go.sum нужно коммитить, но иногда может конфликтовать
+# go.sum
+
+# Air живая перезагрузка
+tmp/
+
+# IDE и редакторы
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# GoLand/IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Операционные системы
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Логи и временные файлы
+*.log
+logs/
+*.tmp
+*.temp
+temp/
+.tmp/
+
+# Файлы конфигурации с секретами
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+config/local.yaml
+config/development.yaml
+config/production.yaml
+secrets.yaml
+*.secret
+.secrets/
+
+# База данных
+*.db
+*.sqlite
+*.sqlite3
+database.db
+data/
+db_data/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Kubernetes
+*.kubeconfig
+
+# SSL сертификаты
+*.pem
+*.key
+*.crt
+*.p12
+certs/
+ssl/
+
+# Backup файлы
+*.backup
+*.bak
+*.orig
+
+# Профилирование
+*.prof
+*.pprof
+cpu.out
+mem.out
+profile.out
+
+# Документация (сгенерированная)
+docs/generated/
+api-docs/
+
+# Статические файлы (если генерируются)
+static/dist/
+assets/dist/
+
+# Кеш
+.cache/
+cache/
+
+# Node.js (если используется для фронтенда)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Миграции (локальные)
+migrations/local/
+
+# Тестовые данные
+testdata/output/
+test-results/
+
+# Мониторинг и метрики
+prometheus_data/
+grafana_data/
+
+# Локальные скрипты разработчика
+scripts/local/
+local.sh
+dev.sh
+
+# Build артефакты
+build/
+out/
+target/
+
+# Сжатые файлы
+*.zip
+*.tar.gz
+*.rar
+
+# PID файлы
+*.pid
+
+# Файлы состояния
+.state
+state.json
+
+# helpers
+project-help.txt
