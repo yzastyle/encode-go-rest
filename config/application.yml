@@ -5,12 +5,13 @@ server:
   write_timeout: "15s"           
   idle_timeout: "60s"            
 
-database:
+datasource:
+  type: "postgres"              
   host: "localhost"              
   port: "5432"                   
-  user: "postgres"               
-  password: "password"           
-  dbname: "person_api"           
+  user: "admin"               
+  password: "643admin643x!"           
+  dbname: "endb"           
   ssl_mode: "disable"            
   max_open_connections: 25       
   max_idle_connections: 5        

@@ -15,6 +15,7 @@ func LoadConfig() (*AppConfig, error) {
 	viper.SetConfigName("application")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath("./config")
+	viper.AddConfigPath("../config")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
