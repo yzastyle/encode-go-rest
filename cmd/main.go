@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/yzastyle/encode-go-rest/internal"
-	"github.com/yzastyle/encode-go-rest/internal/app"
 	"github.com/yzastyle/encode-go-rest/internal/postgre"
 )
 
@@ -28,16 +26,7 @@ func main() {
 }
 
 func test(ctx *context) {
-	var persons []app.Person
-	var err error
-	persons, err = ctx.personRepositoryImpl.GetAllPersons()
-	if err != nil {
-		log.Fatal("Failed to get all persons:", err)
-	}
-	fmt.Println(persons)
-	for i := 0; i < len(persons); i++ {
-		fmt.Println("Person ID:", persons[i].GetId())
-	}
+
 }
 
 func loadConfig() {

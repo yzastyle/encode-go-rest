@@ -1,11 +1,17 @@
 package app
 
+import "github.com/google/uuid"
+
 type Person struct {
 	Id        string `db:"id"`
 	Email     string `db:"email"`
 	Phone     string `db:"phone"`
 	FirstName string `db:"first_name"`
 	LastName  string `db:"last_name"`
+}
+
+func BuildId() uuid.UUID {
+	return uuid.New()
 }
 
 func (p *Person) GetId() string {
