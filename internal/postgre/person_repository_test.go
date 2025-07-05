@@ -12,7 +12,7 @@ import (
 )
 
 func setUp() PersonRepository {
-	_, err := config.LoadConfig()
+	_, _, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
 	}
