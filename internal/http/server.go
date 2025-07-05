@@ -29,4 +29,5 @@ func registerRoutes(e *echo.Echo, personHandler handlers.PersonHandler) {
 	e.GET(person, personHandler.GetPersonById())
 	e.POST(persons, personHandler.CreatePerson())
 	e.PUT(person, personHandler.UpdatePerson())
+	e.DELETE(person, personHandler.DeletePerson())
 }

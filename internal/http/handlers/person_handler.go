@@ -18,6 +18,7 @@ type PersonHandler interface {
 	GetPersonById() func(echo.Context) error
 	CreatePerson() func(echo.Context) error
 	UpdatePerson() func(echo.Context) error
+	DeletePerson() func(echo.Context) error
 }
 
 type personHandlerImpl struct {
@@ -72,5 +73,12 @@ func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
 			//error
 		}
 		return c.JSON(http.StatusOK, person)
+	}
+}
+
+func (h *personHandlerImpl) DeletePerson() func(echo.Context) error {
+	return func(c echo.Context) error {
+		h.personLogic.DeletePerson(c.Param(pathParamId))
+		return c.NoContent(http.StatusNoContent)
 	}
 }
