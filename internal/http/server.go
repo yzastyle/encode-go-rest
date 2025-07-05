@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	PersonUrl = "/api/v1/persons"
+	persons = "/api/v1/persons"
+	person  = "/api/v1/persons/:id"
 )
 
 func StartServer(serverAdress string, personLogic logic.PersonLogic) {
@@ -24,5 +25,8 @@ func StartServer(serverAdress string, personLogic logic.PersonLogic) {
 }
 
 func registerRoutes(e *echo.Echo, personHandler handlers.PersonHandler) {
-	e.GET(PersonUrl, personHandler.GetAllPersons())
+	e.GET(persons, personHandler.GetAllPersons())
+	e.GET(person, personHandler.GetPersonById())
+	e.POST(persons, personHandler.CreatePerson())
+	e.PUT(person, personHandler.UpdatePerson())
 }
