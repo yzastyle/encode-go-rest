@@ -7,10 +7,10 @@ import (
 
 type PersonLogic interface {
 	GetAllPersons() []app.Person
-	//GetPersonById(id string) *app.Person
-	//CreatePerson(person *app.Person) error
-	//UpdatePerson(person *app.Person) error
-	//DeletePerson(id string)
+	GetPersonById(id string) *app.Person
+	CreatePerson(person *app.Person) error
+	UpdatePerson(person *app.Person) error
+	DeletePerson(id string)
 }
 
 type personLogicImpl struct {
@@ -23,4 +23,20 @@ func NewPersonLogic(personRepository postgre.PersonRepository) PersonLogic {
 
 func (l *personLogicImpl) GetAllPersons() []app.Person {
 	return l.personRepository.GetAllPersons()
+}
+
+func (l *personLogicImpl) GetPersonById(id string) *app.Person {
+	return l.personRepository.GetPersonById(id)
+}
+
+func (l *personLogicImpl) CreatePerson(person *app.Person) error {
+	return l.personRepository.CreatePerson(person)
+}
+
+func (l *personLogicImpl) UpdatePerson(person *app.Person) error {
+	return l.personRepository.UpdatePerson(person)
+}
+
+func (l *personLogicImpl) DeletePerson(id string) {
+	l.personRepository.DeletePerson(id)
 }
