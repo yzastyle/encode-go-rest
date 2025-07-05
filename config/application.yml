@@ -1,9 +1,6 @@
 server:
   host: "localhost"             
-  port: "8080"                   
-  read_timeout: "15s"            
-  write_timeout: "15s"           
-  idle_timeout: "60s"            
+  port: "8080"                              
 
 datasource:
   type: "postgres"              
@@ -26,3 +23,4 @@ logging:
   max_backups: 3                 # Количество архивных файлов
   max_age: 28                    # Максимальный возраст лог файла в днях
   compress: true                 # Сжимать архивные файлы
+  report_caller: true
