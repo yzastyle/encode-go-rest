@@ -5,6 +5,7 @@ import (
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/yzastyle/encode-go-rest/internal/config"
+	"github.com/yzastyle/encode-go-rest/internal/http"
 	"github.com/yzastyle/encode-go-rest/internal/logic"
 	"github.com/yzastyle/encode-go-rest/internal/postgre"
 )
@@ -25,6 +26,7 @@ func InitContext() {
 	initDataSource(&ctx)
 	initRepositories(&ctx)
 	initLogic(&ctx)
+	initServer(&ctx)
 }
 
 func initLogic(ctx *context) {
@@ -34,6 +36,15 @@ func initLogic(ctx *context) {
 func initRepositories(ctx *context) {
 	ctx.personRepository = postgre.NewPersonRepository(ctx.connection)
 
+}
+
+func initServer(ctx *context) {
+	serverConfig, err := http.LoadServerConfig()
+	if err != nil {
+		log.Fatal("Failed to load server config:", err)
+	}
+	serverAdress := http.BuildServerAddress(serverConfig)
+	http.StartServer(serverAdress, ctx.personLogic)
 }
 
 func initDataSource(ctx *context) {
