@@ -7,30 +7,29 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/yzastyle/encode-go-rest/internal"
 	"github.com/yzastyle/encode-go-rest/internal/app"
-	"github.com/yzastyle/encode-go-rest/internal/postgre"
+	"github.com/yzastyle/encode-go-rest/internal/config"
 )
 
-func setUp() postgre.PersonRepository {
-	_, err := internal.LoadConfig()
+func setUp() PersonRepository {
+	_, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
 	}
-	dsConfig, err := postgre.LoadDataSourceConfig()
+	dsConfig, err := LoadDataSourceConfig()
 	if err != nil {
 		log.Fatal("Failed to load data source config:", err)
 	}
 
-	connectionUrl := postgre.BuildConnectionURL(dsConfig)
-	dataSource := postgre.DataSource{}
+	connectionUrl := BuildConnectionURL(dsConfig)
+	dataSource := DataSource{}
 	dataSource.SetConnectionURL(connectionUrl)
 	dataSource.SetDataSourceType(dsConfig.Type)
 	connection, err := dataSource.GetConnection()
 	if err != nil {
 		log.Fatal("Failed to get connection:", err)
 	}
-	personRepository := postgre.NewPersonRepository(connection)
+	personRepository := NewPersonRepository(connection)
 	return personRepository
 }
 

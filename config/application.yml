@@ -13,9 +13,6 @@ datasource:
   password: "643admin643x!"           
   dbname: "endb"           
   ssl_mode: "disable"            
-  max_open_connections: 25       
-  max_idle_connections: 5        
-  connection_max_lifetime: "5m" 
 
 app:
   name: "enCode REST API"       

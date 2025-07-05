@@ -1,4 +1,4 @@
-package internal
+package config
 
 import (
 	"fmt"
@@ -16,6 +16,7 @@ func LoadConfig() (*AppConfig, error) {
 	viper.SetConfigType("yml")
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath("../config")
+	viper.AddConfigPath("/config")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
