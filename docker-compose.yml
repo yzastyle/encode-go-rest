@@ -1,0 +1,31 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 643admin643x!
+      POSTGRES_DB: endb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql  
+    networks:
+      - my-network
+    restart: always
+  encode-go-rest:
+    container_name: go_backend_encode
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+    networks:
+      - my-network
+    environment:
+      - DB_HOST=postgres_db  
+    restart: always
+networks:
+  my-network:          

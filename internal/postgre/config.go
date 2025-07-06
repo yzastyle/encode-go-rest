@@ -21,6 +21,9 @@ func LoadDataSourceConfig() (*DataSourceConfig, error) {
 	if err := viper.UnmarshalKey("datasource", &dataSourceConfig); err != nil {
 		return nil, fmt.Errorf("error unmarshal datasource config: %w", err)
 	}
+	if dataSourceConfig.Host == "${DB_HOST}" {
+		dataSourceConfig.Host = "localhost"
+	}
 	return &dataSourceConfig, nil
 }
 
