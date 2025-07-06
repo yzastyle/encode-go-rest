@@ -25,7 +25,7 @@ services:
     networks:
       - my-network
     environment:
-      - DB_HOST=postgres_db  
+      - DB_HOST=postgres-db  
     restart: always
 networks:
   my-network:          

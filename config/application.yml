@@ -4,7 +4,7 @@ server:
 
 datasource:
   type: "postgres"              
-  host: "${DB_HOST}"              
+  host: "localhost"              
   port: "5432"                   
   user: "admin"               
   password: "643admin643x!"           
