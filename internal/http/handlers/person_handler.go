@@ -39,10 +39,9 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 		"method": "GET",
 		"path":   constants.Persons})
 
-	persons := h.personLogic.GetAllPersons()
-
 	return func(c echo.Context) error {
 		log.Debug("GetAllPersons")
+		persons := h.personLogic.GetAllPersons()
 		return c.JSON(http.StatusOK, persons)
 	}
 }
