@@ -35,11 +35,11 @@ func NewPersonHandler(l logic.PersonLogic) PersonHandler {
 }
 
 func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
-	log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
-		"method": "GET",
-		"path":   constants.Persons})
-
 	return func(c echo.Context) error {
+		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
+			"method": "GET",
+			"path":   constants.Persons})
+
 		log.Debug("GetAllPersons")
 		persons := h.personLogic.GetAllPersons()
 		return c.JSON(http.StatusOK, persons)
@@ -47,14 +47,13 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 }
 
 func (h *personHandlerImpl) GetPersonById() func(echo.Context) error {
-	log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
-		"method": "GET",
-		"path":   constants.Person})
-
 	return func(c echo.Context) error {
+		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
+			"method": "GET",
+			"path":   constants.Person})
+
 		id := c.Param(pathParamId)
 		log.Debug("GetPersonById with id=" + id)
-
 		person := h.personLogic.GetPersonById(id)
 		if person != nil {
 			return c.JSON(http.StatusOK, person)
@@ -65,11 +64,11 @@ func (h *personHandlerImpl) GetPersonById() func(echo.Context) error {
 }
 
 func (h *personHandlerImpl) CreatePerson() func(echo.Context) error {
-	log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
-		"method": "POST",
-		"path":   constants.Persons})
-
 	return func(c echo.Context) error {
+		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
+			"method": "POST",
+			"path":   constants.Persons})
+
 		log.Debug("CreatePerson")
 		u := new(app.PersonDTO)
 		if err := c.Bind(u); err != nil {
@@ -88,11 +87,11 @@ func (h *personHandlerImpl) CreatePerson() func(echo.Context) error {
 }
 
 func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
-	log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
-		"method": "PUT",
-		"path":   constants.Person})
-
 	return func(c echo.Context) error {
+		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
+			"method": "PUT",
+			"path":   constants.Person})
+
 		log.Debug("UpdatePerson")
 		u := new(app.PersonDTO)
 		if err := c.Bind(u); err != nil {
@@ -111,11 +110,11 @@ func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
 }
 
 func (h *personHandlerImpl) DeletePerson() func(echo.Context) error {
-	log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
-		"method": "DELETE",
-		"path":   constants.Persons})
-
 	return func(c echo.Context) error {
+		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
+			"method": "DELETE",
+			"path":   constants.Persons})
+
 		log.Debug("DeletePerson")
 		if err := h.personLogic.DeletePerson(c.Param(pathParamId)); err != nil {
 			log.WithError(err).Error("An error occurred while executing the request.")
