@@ -13,7 +13,7 @@ const (
 )
 
 type PersonRepository interface {
-	GetAllPersons() []app.Person
+	GetAllPersons(criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
 	GetPersonById(id string) *app.Person
 	CreatePerson(person *app.Person) error
 	UpdatePerson(person *app.Person) error
@@ -21,24 +21,33 @@ type PersonRepository interface {
 }
 
 type personRepositoryImpl struct {
-	connection *dbr.Connection
-	logger     *logg.Entry
+	connection   *dbr.Connection
+	logger       *logg.Entry
+	queryBuilder *QueryBuilder
 }
 
 func NewPersonRepository(connection *dbr.Connection) PersonRepository {
 	return &personRepositoryImpl{connection: connection,
-		logger: logger.NewRepositoryLogger("person")}
+		logger:       logger.NewRepositoryLogger("person"),
+		queryBuilder: &QueryBuilder{}}
 }
 
-func (r *personRepositoryImpl) GetAllPersons() []app.Person {
+func (r *personRepositoryImpl) GetAllPersons(criteriaDTO app.PersonSearchCriteriaDTO) []app.Person {
 	log := r.logger.WithField("operation", "get_all")
 
 	var persons []app.Person
-
 	session := r.connection.NewSession(nil)
-	_, err := session.Select(All).From(Person).Load(&persons)
+	sel := r.queryBuilder.CreateQuery(session.Select(All).From(Person)).
+		HasFirstName(criteriaDTO.FirstName).
+		HasLastName(criteriaDTO.LastName).
+		HasEmail(criteriaDTO.Email).
+		HasPhone(criteriaDTO.Phone).
+		WithLimit(criteriaDTO.Limit).
+		WithOffest(criteriaDTO.Offset).
+		Build()
+
+	_, err := sel.Load(&persons)
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch all persons")
 		return persons
 	}
 	log.WithField("count", len(persons)).Debug("Successfully fetched all persons")
@@ -56,7 +65,6 @@ func (r *personRepositoryImpl) GetPersonById(id string) *app.Person {
 		if err == dbr.ErrNotFound {
 			return nil
 		}
-		log.WithError(err).Error("Failed to fetch person by id")
 		return nil
 	}
 	log.Debug("Successfully fetched person by id")
@@ -77,7 +85,6 @@ func (r *personRepositoryImpl) CreatePerson(person *app.Person) error {
 		Record(person).
 		Exec()
 	if err != nil {
-		log.WithError(err).Error("Failed to create person")
 		return err
 	}
 	log.Debug("Successfully created person")
@@ -101,7 +108,6 @@ func (r *personRepositoryImpl) UpdatePerson(person *app.Person) error {
 		Where("id = ?", person.GetId()).
 		Exec()
 	if err != nil {
-		log.WithError(err).Error("Failed to update person")
 		return err
 	}
 	log.Debug("Successfully updated person")
@@ -114,7 +120,6 @@ func (r *personRepositoryImpl) DeletePerson(id string) error {
 	session := r.connection.NewSession(nil)
 	_, err := session.DeleteFrom(Person).Where("id = ?", id).Exec()
 	if err != nil {
-		log.WithError(err).Error("Failed to delete person by id")
 		return err
 	} else {
 		log.Debug("Successfully deleted person by id")

@@ -44,7 +44,7 @@ func setUp() PersonRepository {
 func TestGetAllPersons(t *testing.T) {
 	personRepository := setUp()
 
-	persons := personRepository.GetAllPersons()
+	persons := personRepository.GetAllPersons(app.PersonSearchCriteriaDTO{})
 
 	if len(persons) == 0 {
 		t.Error("Expected to get at least one person, but got zero")

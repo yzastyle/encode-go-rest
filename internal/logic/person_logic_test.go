@@ -46,7 +46,7 @@ func setUp() PersonLogic {
 func TestGetAllPersons(t *testing.T) {
 	personLogic := setUp()
 
-	persons := personLogic.GetAllPersons()
+	persons := personLogic.GetAllPersons(app.PersonSearchCriteriaDTO{})
 
 	if len(persons) == 0 {
 		t.Error("Expected to get at least one person, but got zero")

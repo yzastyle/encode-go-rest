@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -13,7 +14,8 @@ import (
 )
 
 const (
-	pathParamId = "id"
+	pathParamId     = "id"
+	queryParamLimit = "limit"
 )
 
 type PersonHandler interface {
@@ -41,7 +43,15 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 			"path":   constants.Persons})
 
 		log.Debug("GetAllPersons")
-		persons := h.personLogic.GetAllPersons()
+
+		var criteriaDto app.PersonSearchCriteriaDTO
+		err := c.Bind(&criteriaDto)
+		if err != nil {
+			log.WithError(err).Error("An error occurred while executing the request.")
+			return c.String(http.StatusBadRequest, "bad request")
+		}
+		fmt.Println(criteriaDto)
+		persons := h.personLogic.GetAllPersons(criteriaDto)
 		return c.JSON(http.StatusOK, persons)
 	}
 }
