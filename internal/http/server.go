@@ -3,13 +3,9 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	logg "github.com/sirupsen/logrus"
+	"github.com/yzastyle/encode-go-rest/internal/constants"
 	"github.com/yzastyle/encode-go-rest/internal/http/handlers"
 	"github.com/yzastyle/encode-go-rest/internal/logic"
-)
-
-const (
-	persons = "/api/v1/persons"
-	person  = "/api/v1/persons/:id"
 )
 
 func StartServer(serverAdress string, personLogic logic.PersonLogic, contextLogger *logg.Entry) {
@@ -25,9 +21,9 @@ func StartServer(serverAdress string, personLogic logic.PersonLogic, contextLogg
 }
 
 func registerRoutes(e *echo.Echo, personHandler handlers.PersonHandler) {
-	e.GET(persons, personHandler.GetAllPersons())
-	e.GET(person, personHandler.GetPersonById())
-	e.POST(persons, personHandler.CreatePerson())
-	e.PUT(person, personHandler.UpdatePerson())
-	e.DELETE(person, personHandler.DeletePerson())
+	e.GET(constants.Persons, personHandler.GetAllPersons())
+	e.GET(constants.Person, personHandler.GetPersonById())
+	e.POST(constants.Persons, personHandler.CreatePerson())
+	e.PUT(constants.Person, personHandler.UpdatePerson())
+	e.DELETE(constants.Person, personHandler.DeletePerson())
 }

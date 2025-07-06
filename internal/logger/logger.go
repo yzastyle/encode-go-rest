@@ -26,12 +26,9 @@ func NewContextLogger(service string) *logg.Entry {
 	})
 }
 
-func NewRequestLogger(method, path, requestId string) *logg.Entry {
+func NewRequestLogger() *logg.Entry {
 	return Logger.WithFields(logg.Fields{
-		"method":     method,
-		"path":       path,
-		"request_id": requestId,
-		"component":  "http",
+		"component": "http",
 	})
 }
 

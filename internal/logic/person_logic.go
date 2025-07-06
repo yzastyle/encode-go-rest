@@ -22,7 +22,10 @@ func NewPersonLogic(personRepository postgre.PersonRepository) PersonLogic {
 }
 
 func (l *personLogicImpl) GetAllPersons() []app.Person {
-	return l.personRepository.GetAllPersons()
+	if persons := l.personRepository.GetAllPersons(); persons != nil {
+		return persons
+	}
+	return make([]app.Person, 0)
 }
 
 func (l *personLogicImpl) GetPersonById(id string) *app.Person {
