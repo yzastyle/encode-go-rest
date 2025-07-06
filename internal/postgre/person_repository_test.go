@@ -9,12 +9,20 @@ import (
 
 	"github.com/yzastyle/encode-go-rest/internal/app"
 	"github.com/yzastyle/encode-go-rest/internal/config"
+	"github.com/yzastyle/encode-go-rest/internal/logger"
 )
 
 func setUp() PersonRepository {
-	_, _, err := config.LoadConfig()
+	_, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
+	}
+	loggerConfig, err := logger.LoadLoggerConfig()
+	if err != nil {
+		log.Fatal("Failed to load config:", err)
+	}
+	if err := logger.InitLogger(loggerConfig); err != nil {
+		log.Fatal("Failed to init logger:", err)
 	}
 	dsConfig, err := LoadDataSourceConfig()
 	if err != nil {
@@ -120,7 +128,7 @@ func TestDeletePerson(t *testing.T) {
 	}
 	personRepository.DeletePerson(person.Id)
 	retrievedPerson := personRepository.GetPersonById(person.Id)
-	if retrievedPerson.Id != "" {
+	if retrievedPerson != nil {
 		t.Errorf("Expected person to be deleted, but it still exists: %v", retrievedPerson)
 	}
 }

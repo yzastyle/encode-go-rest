@@ -10,7 +10,7 @@ type PersonLogic interface {
 	GetPersonById(id string) *app.Person
 	CreatePerson(person *app.Person) error
 	UpdatePerson(person *app.Person) error
-	DeletePerson(id string)
+	DeletePerson(id string) error
 }
 
 type personLogicImpl struct {
@@ -37,6 +37,6 @@ func (l *personLogicImpl) UpdatePerson(person *app.Person) error {
 	return l.personRepository.UpdatePerson(person)
 }
 
-func (l *personLogicImpl) DeletePerson(id string) {
-	l.personRepository.DeletePerson(id)
+func (l *personLogicImpl) DeletePerson(id string) error {
+	return l.personRepository.DeletePerson(id)
 }

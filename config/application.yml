@@ -16,11 +16,4 @@ app:
   version: "1.0.0"              
   
 logging:
-  format: "json"                 # Формат логов (json/text)
-  output: "stdout"               # Вывод логов (stdout/file)
-  file_path: "logs/app.log"      # Путь к файлу логов (если output=file)
-  max_size: 100                  # Максимальный размер лог файла в MB
-  max_backups: 3                 # Количество архивных файлов
-  max_age: 28                    # Максимальный возраст лог файла в днях
-  compress: true                 # Сжимать архивные файлы
   report_caller: true

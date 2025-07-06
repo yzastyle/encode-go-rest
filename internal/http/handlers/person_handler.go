@@ -39,8 +39,12 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 
 func (h *personHandlerImpl) GetPersonById() func(echo.Context) error {
 	return func(c echo.Context) error {
-		person := h.personLogic.GetPersonById(c.Param(pathParamId))
-		return c.JSON(http.StatusOK, person)
+		id := c.Param(pathParamId)
+		person := h.personLogic.GetPersonById(id)
+		if person != nil {
+			return c.JSON(http.StatusOK, person)
+		}
+		return c.String(http.StatusNotFound, "Person with id="+id+" not found")
 	}
 }
 
@@ -54,7 +58,7 @@ func (h *personHandlerImpl) CreatePerson() func(echo.Context) error {
 		person.Id = app.BuildId().String()
 
 		if err := h.personLogic.CreatePerson(&person); err != nil {
-			//ошибка
+			return c.String(http.StatusInternalServerError, "Failed to create person")
 		}
 		return c.JSON(http.StatusCreated, person)
 	}
@@ -70,7 +74,7 @@ func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
 		person.Id = c.Param(pathParamId)
 
 		if err := h.personLogic.UpdatePerson(&person); err != nil {
-			//error
+			return c.String(http.StatusInternalServerError, "Failed to update person")
 		}
 		return c.JSON(http.StatusOK, person)
 	}
@@ -78,7 +82,9 @@ func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
 
 func (h *personHandlerImpl) DeletePerson() func(echo.Context) error {
 	return func(c echo.Context) error {
-		h.personLogic.DeletePerson(c.Param(pathParamId))
+		if err := h.personLogic.DeletePerson(c.Param(pathParamId)); err != nil {
+			return c.String(http.StatusInternalServerError, "Failed to update person")
+		}
 		return c.NoContent(http.StatusNoContent)
 	}
 }

@@ -9,13 +9,21 @@ import (
 
 	"github.com/yzastyle/encode-go-rest/internal/app"
 	"github.com/yzastyle/encode-go-rest/internal/config"
+	"github.com/yzastyle/encode-go-rest/internal/logger"
 	"github.com/yzastyle/encode-go-rest/internal/postgre"
 )
 
 func setUp() PersonLogic {
-	_, _, err := config.LoadConfig()
+	_, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
+	}
+	loggerConfig, err := logger.LoadLoggerConfig()
+	if err != nil {
+		log.Fatal("Failed to load config:", err)
+	}
+	if err := logger.InitLogger(loggerConfig); err != nil {
+		log.Fatal("Failed to init logger:", err)
 	}
 	dsConfig, err := postgre.LoadDataSourceConfig()
 	if err != nil {
@@ -122,7 +130,7 @@ func TestDeletePerson(t *testing.T) {
 	}
 	personLogic.DeletePerson(person.Id)
 	retrievedPerson := personLogic.GetPersonById(person.Id)
-	if retrievedPerson.Id != "" {
+	if retrievedPerson != nil {
 		t.Errorf("Expected person to be deleted, but it still exists: %v", retrievedPerson)
 	}
 }

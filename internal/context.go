@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gocraft/dbr/v2"
+	logg "github.com/sirupsen/logrus"
 	"github.com/yzastyle/encode-go-rest/internal/config"
 	"github.com/yzastyle/encode-go-rest/internal/http"
 	"github.com/yzastyle/encode-go-rest/internal/logger"
@@ -12,6 +13,7 @@ import (
 )
 
 type context struct {
+	contextLogger    *logg.Entry
 	connection       *dbr.Connection
 	personRepository postgre.PersonRepository
 	personLogic      logic.PersonLogic
@@ -22,9 +24,9 @@ func NewContext() *context {
 }
 
 func InitContext() {
-	loggerConfig := loadConfig()
-	initLogger(loggerConfig)
-	ctx := context{}
+	loadConfig()
+	contextLogger := initLogger()
+	ctx := context{contextLogger: contextLogger}
 	initDataSource(&ctx)
 	initRepositories(&ctx)
 	initLogic(&ctx)
@@ -41,18 +43,20 @@ func initRepositories(ctx *context) {
 }
 
 func initServer(ctx *context) {
+	contextLogger := ctx.contextLogger
 	serverConfig, err := http.LoadServerConfig()
 	if err != nil {
-		log.Fatal("Failed to load server config:", err)
+		contextLogger.WithError(err).Fatal("Failed to load server config")
 	}
 	serverAdress := http.BuildServerAddress(serverConfig)
-	http.StartServer(serverAdress, ctx.personLogic)
+	http.StartServer(serverAdress, ctx.personLogic, contextLogger)
 }
 
 func initDataSource(ctx *context) {
+	contextLogger := ctx.contextLogger
 	dsConfig, err := postgre.LoadDataSourceConfig()
 	if err != nil {
-		log.Fatal("Failed to load data source config:", err)
+		contextLogger.WithError(err).Fatal("Failed to load data source config")
 	}
 
 	connectionUrl := postgre.BuildConnectionURL(dsConfig)
@@ -61,19 +65,27 @@ func initDataSource(ctx *context) {
 	dataSource.SetDataSourceType(dsConfig.Type)
 	connection, err := dataSource.GetConnection()
 	if err != nil {
-		log.Fatal("Failed to get connection:", err)
+		contextLogger.WithError(err).Fatal("Failed to get connection")
 	}
 	ctx.connection = connection
+	contextLogger.Info("DataSource initialized successfully")
 }
 
-func initLogger(config *config.LoggerConfig) {
-	logger.InitLogger(config)
-}
-
-func loadConfig() *config.LoggerConfig {
-	_, loggerConfig, err := config.LoadConfig()
+func initLogger() *logg.Entry {
+	loggerConfig, err := logger.LoadLoggerConfig()
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
 	}
-	return loggerConfig
+	if err := logger.InitLogger(loggerConfig); err != nil {
+		log.Fatal("Failed to init logger:", err)
+	}
+	contextLogger := logger.NewContextLogger("context")
+	return contextLogger
+}
+
+func loadConfig() {
+	_, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal("Failed to load config:", err)
+	}
 }

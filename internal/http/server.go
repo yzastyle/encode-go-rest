@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/labstack/echo/v4"
+	logg "github.com/sirupsen/logrus"
 	"github.com/yzastyle/encode-go-rest/internal/http/handlers"
 	"github.com/yzastyle/encode-go-rest/internal/logic"
 )
@@ -11,16 +12,15 @@ const (
 	person  = "/api/v1/persons/:id"
 )
 
-func StartServer(serverAdress string, personLogic logic.PersonLogic) {
+func StartServer(serverAdress string, personLogic logic.PersonLogic, contextLogger *logg.Entry) {
 	e := echo.New()
 	// Register routes, middleware, etc.
-	// e.GET("/example", exampleHandler)
 	personHandler := handlers.NewPersonHandler(personLogic)
 
 	registerRoutes(e, personHandler)
 
 	if err := e.Start(serverAdress); err != nil {
-		e.Logger.Fatal("Failed to start server:", err)
+		contextLogger.WithError(err).Fatal("Failed to start server")
 	}
 }
 
