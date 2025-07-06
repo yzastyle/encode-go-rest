@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gocraft/dbr/v2"
@@ -63,7 +62,6 @@ func initDataSource(ctx *context) {
 	connectionUrl := postgre.BuildConnectionURL(dsConfig)
 	dataSource := postgre.DataSource{}
 	dataSource.SetConnectionURL(connectionUrl)
-	fmt.Println(connectionUrl)
 	dataSource.SetDataSourceType(dsConfig.Type)
 	connection, err := dataSource.GetConnection()
 	if err != nil {
