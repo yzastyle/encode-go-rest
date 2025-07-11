@@ -16,10 +16,10 @@ const (
 
 type PersonRepository interface {
 	GetAllPersons(ctx context.Context, criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
-	GetPersonById(id string) *app.Person
-	CreatePerson(person *app.Person) error
-	UpdatePerson(person *app.Person) error
-	DeletePerson(id string) error
+	GetPersonById(ctx context.Context, id string) *app.Person
+	CreatePerson(ctx context.Context, person *app.Person) error
+	UpdatePerson(ctx context.Context, person *app.Person) error
+	DeletePerson(ctx context.Context, id string) error
 }
 
 type personRepositoryImpl struct {
@@ -56,7 +56,7 @@ func (r *personRepositoryImpl) GetAllPersons(ctx context.Context, criteriaDTO ap
 	return persons
 }
 
-func (r *personRepositoryImpl) GetPersonById(id string) *app.Person {
+func (r *personRepositoryImpl) GetPersonById(ctx context.Context, id string) *app.Person {
 	log := r.logger.WithFields(logg.Fields{"operation": "get_by_id", "person_id": id})
 
 	var person app.Person
@@ -73,7 +73,7 @@ func (r *personRepositoryImpl) GetPersonById(id string) *app.Person {
 	return &person
 }
 
-func (r *personRepositoryImpl) CreatePerson(person *app.Person) error {
+func (r *personRepositoryImpl) CreatePerson(ctx context.Context, person *app.Person) error {
 	log := r.logger.WithFields(logg.Fields{"operation": "create",
 		"id":         person.Id,
 		"email":      person.Email,
@@ -93,7 +93,7 @@ func (r *personRepositoryImpl) CreatePerson(person *app.Person) error {
 	return nil
 }
 
-func (r *personRepositoryImpl) UpdatePerson(person *app.Person) error {
+func (r *personRepositoryImpl) UpdatePerson(ctx context.Context, person *app.Person) error {
 	log := r.logger.WithFields(logg.Fields{"operation": "update",
 		"id":         person.Id,
 		"email":      person.Email,
@@ -116,7 +116,7 @@ func (r *personRepositoryImpl) UpdatePerson(person *app.Person) error {
 	return nil
 }
 
-func (r *personRepositoryImpl) DeletePerson(id string) error {
+func (r *personRepositoryImpl) DeletePerson(ctx context.Context, id string) error {
 	log := r.logger.WithFields(logg.Fields{"operation": "delete_by_id", "person_id": id})
 
 	session := r.connection.NewSession(nil)

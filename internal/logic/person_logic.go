@@ -9,10 +9,10 @@ import (
 
 type PersonLogic interface {
 	GetAllPersons(ctx context.Context, criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
-	GetPersonById(id string) *app.Person
-	CreatePerson(person *app.Person) error
-	UpdatePerson(person *app.Person) error
-	DeletePerson(id string) error
+	GetPersonById(ctx context.Context, id string) *app.Person
+	CreatePerson(ctx context.Context, person *app.Person) error
+	UpdatePerson(ctx context.Context, person *app.Person) error
+	DeletePerson(ctx context.Context, id string) error
 }
 
 type personLogicImpl struct {
@@ -30,18 +30,18 @@ func (l *personLogicImpl) GetAllPersons(ctx context.Context, criteriaDTO app.Per
 	return make([]app.Person, 0)
 }
 
-func (l *personLogicImpl) GetPersonById(id string) *app.Person {
-	return l.personRepository.GetPersonById(id)
+func (l *personLogicImpl) GetPersonById(ctx context.Context, id string) *app.Person {
+	return l.personRepository.GetPersonById(ctx, id)
 }
 
-func (l *personLogicImpl) CreatePerson(person *app.Person) error {
-	return l.personRepository.CreatePerson(person)
+func (l *personLogicImpl) CreatePerson(ctx context.Context, person *app.Person) error {
+	return l.personRepository.CreatePerson(ctx, person)
 }
 
-func (l *personLogicImpl) UpdatePerson(person *app.Person) error {
-	return l.personRepository.UpdatePerson(person)
+func (l *personLogicImpl) UpdatePerson(ctx context.Context, person *app.Person) error {
+	return l.personRepository.UpdatePerson(ctx, person)
 }
 
-func (l *personLogicImpl) DeletePerson(id string) error {
-	return l.personRepository.DeletePerson(id)
+func (l *personLogicImpl) DeletePerson(ctx context.Context, id string) error {
+	return l.personRepository.DeletePerson(ctx, id)
 }

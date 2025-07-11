@@ -57,7 +57,7 @@ func TestGetAllPersons(t *testing.T) {
 func TestGetPersonById(t *testing.T) {
 	personLogic := setUp()
 
-	person := personLogic.GetPersonById("8c2ee53f-ae6a-4db3-9597-316a2f30c619")
+	person := personLogic.GetPersonById(context.TODO(), "8c2ee53f-ae6a-4db3-9597-316a2f30c619")
 
 	if person.GetId() != "8c2ee53f-ae6a-4db3-9597-316a2f30c619" {
 		t.Errorf("Expected person ID to be '8c2ee53f-ae6a-4db3-9597-316a2f30c619', but got '%s'", person.GetId())
@@ -85,11 +85,11 @@ func TestCreatePerson(t *testing.T) {
 		LastName:  "LDoe",
 		Phone:     "+1234567111"}
 
-	err := personLogic.CreatePerson(person)
+	err := personLogic.CreatePerson(context.TODO(), person)
 	if err != nil {
 		t.Errorf("Failed to create person: %v", err)
 	}
-	retrievedPerson := personLogic.GetPersonById(person.Id)
+	retrievedPerson := personLogic.GetPersonById(context.TODO(), person.Id)
 	if retrievedPerson.GetId() != person.Id {
 		t.Errorf("Failed to create person: %v", err)
 	}
@@ -100,17 +100,17 @@ func TestUpdatePerson(t *testing.T) {
 
 	randPrefix := strconv.Itoa(rand.Intn(10000))
 
-	person := personLogic.GetPersonById("9843b4b8-6c55-44a1-8d89-d581105988b9")
+	person := personLogic.GetPersonById(context.TODO(), "9843b4b8-6c55-44a1-8d89-d581105988b9")
 	person.Email = randPrefix + "LUPDATED@gmail.com"
 	person.Phone = "8800811" + randPrefix
 	person.FirstName = randPrefix + "LUpdatedFirstName"
 	person.LastName = randPrefix + "LUpdatedLastName"
 
-	err := personLogic.UpdatePerson(person)
+	err := personLogic.UpdatePerson(context.TODO(), person)
 	if err != nil {
 		t.Errorf("Failed to update person: %v", err)
 	}
-	retrievedPerson := personLogic.GetPersonById(person.Id)
+	retrievedPerson := personLogic.GetPersonById(context.TODO(), person.Id)
 	if retrievedPerson.Email != person.Email {
 		t.Errorf("Failed to update person email: expected %s, got %s", person.Email, retrievedPerson.Email)
 	}
@@ -125,12 +125,12 @@ func TestDeletePerson(t *testing.T) {
 		LastName:  "ForDeleteL",
 		Phone:     "+1234567111"}
 
-	err := personLogic.CreatePerson(person)
+	err := personLogic.CreatePerson(context.TODO(), person)
 	if err != nil {
 		t.Errorf("Failed to create person: %v", err)
 	}
-	personLogic.DeletePerson(person.Id)
-	retrievedPerson := personLogic.GetPersonById(person.Id)
+	personLogic.DeletePerson(context.TODO(), person.Id)
+	retrievedPerson := personLogic.GetPersonById(context.TODO(), person.Id)
 	if retrievedPerson != nil {
 		t.Errorf("Expected person to be deleted, but it still exists: %v", retrievedPerson)
 	}

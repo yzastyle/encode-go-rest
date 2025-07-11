@@ -36,7 +36,7 @@ type personHandlerImpl struct {
 func NewPersonHandler(l logic.PersonLogic) PersonHandler {
 	return &personHandlerImpl{personLogic: l,
 		logger:  logger.NewRequestLogger(),
-		timeout: time.Duration(100)}
+		timeout: time.Duration(3)}
 }
 
 func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
@@ -63,7 +63,7 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 
 		select {
 		case <-ctx.Done():
-			log.Info("Time occurred while executing the request.")
+			log.Error("Timeout occurred while executing the request.")
 			return c.String(http.StatusRequestTimeout, "timeout")
 		default:
 			return c.JSON(http.StatusOK, persons)
@@ -72,16 +72,29 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 }
 
 func (h *personHandlerImpl) GetPersonById() func(echo.Context) error {
+	duration := h.timeout * time.Millisecond
+	rootCtx := context.Background()
+
 	return func(c echo.Context) error {
+		ctx, cancel := context.WithTimeout(rootCtx, duration)
+		defer cancel()
+
 		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
 			"method": "GET",
 			"path":   constants.Person})
 
 		id := c.Param(pathParamId)
 		log.Debug("GetPersonById with id=" + id)
-		person := h.personLogic.GetPersonById(id)
+		person := h.personLogic.GetPersonById(ctx, id)
 		if person != nil {
-			return c.JSON(http.StatusOK, person)
+			select {
+			case <-ctx.Done():
+				log.Error("Timeout occurred while executing the request.")
+				return c.String(http.StatusRequestTimeout, "timeout")
+			default:
+				return c.JSON(http.StatusOK, person)
+
+			}
 		}
 		log.Debug("GetPersonById: Person with id=" + id + " not found")
 		return c.String(http.StatusNotFound, "Person with id="+id+" not found")
@@ -89,7 +102,13 @@ func (h *personHandlerImpl) GetPersonById() func(echo.Context) error {
 }
 
 func (h *personHandlerImpl) CreatePerson() func(echo.Context) error {
+	duration := h.timeout * time.Millisecond
+	rootCtx := context.Background()
+
 	return func(c echo.Context) error {
+		ctx, cancel := context.WithTimeout(rootCtx, duration)
+		defer cancel()
+
 		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
 			"method": "POST",
 			"path":   constants.Persons})
@@ -103,16 +122,28 @@ func (h *personHandlerImpl) CreatePerson() func(echo.Context) error {
 		person := app.FromDTO(u)
 		person.Id = uuid.New().String()
 
-		if err := h.personLogic.CreatePerson(&person); err != nil {
+		if err := h.personLogic.CreatePerson(ctx, &person); err != nil {
 			log.WithError(err).Error("An error occurred while executing the request.")
 			return c.String(http.StatusInternalServerError, "Failed to create person")
 		}
-		return c.JSON(http.StatusCreated, person)
+		select {
+		case <-ctx.Done():
+			log.Error("Timeout occurred while executing the request.")
+			return c.String(http.StatusRequestTimeout, "timeout")
+		default:
+			return c.JSON(http.StatusCreated, person)
+		}
 	}
 }
 
 func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
+	duration := h.timeout * time.Millisecond
+	rootCtx := context.Background()
+
 	return func(c echo.Context) error {
+		ctx, cancel := context.WithTimeout(rootCtx, duration)
+		defer cancel()
+
 		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
 			"method": "PUT",
 			"path":   constants.Person})
@@ -126,25 +157,43 @@ func (h *personHandlerImpl) UpdatePerson() func(echo.Context) error {
 		person := app.FromDTO(u)
 		person.Id = c.Param(pathParamId)
 
-		if err := h.personLogic.UpdatePerson(&person); err != nil {
+		if err := h.personLogic.UpdatePerson(ctx, &person); err != nil {
 			log.WithError(err).Error("An error occurred while executing the request.")
 			return c.String(http.StatusInternalServerError, "Failed to update person")
 		}
-		return c.JSON(http.StatusOK, person)
+		select {
+		case <-ctx.Done():
+			log.Error("Timeout occurred while executing the request.")
+			return c.String(http.StatusRequestTimeout, "timeout")
+		default:
+			return c.JSON(http.StatusOK, person)
+		}
 	}
 }
 
 func (h *personHandlerImpl) DeletePerson() func(echo.Context) error {
+	duration := h.timeout * time.Millisecond
+	rootCtx := context.Background()
+
 	return func(c echo.Context) error {
+		ctx, cancel := context.WithTimeout(rootCtx, duration)
+		defer cancel()
+
 		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
 			"method": "DELETE",
 			"path":   constants.Persons})
 
 		log.Debug("DeletePerson")
-		if err := h.personLogic.DeletePerson(c.Param(pathParamId)); err != nil {
+		if err := h.personLogic.DeletePerson(ctx, c.Param(pathParamId)); err != nil {
 			log.WithError(err).Error("An error occurred while executing the request.")
 			return c.String(http.StatusInternalServerError, "Failed to update person")
 		}
-		return c.NoContent(http.StatusNoContent)
+		select {
+		case <-ctx.Done():
+			log.Error("Timeout occurred while executing the request.")
+			return c.String(http.StatusRequestTimeout, "timeout")
+		default:
+			return c.NoContent(http.StatusNoContent)
+		}
 	}
 }
