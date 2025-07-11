@@ -1,12 +1,14 @@
 package logic
 
 import (
+	"context"
+
 	"github.com/yzastyle/encode-go-rest/internal/app"
 	"github.com/yzastyle/encode-go-rest/internal/postgre"
 )
 
 type PersonLogic interface {
-	GetAllPersons(criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
+	GetAllPersons(ctx context.Context, criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
 	GetPersonById(id string) *app.Person
 	CreatePerson(person *app.Person) error
 	UpdatePerson(person *app.Person) error
@@ -21,8 +23,8 @@ func NewPersonLogic(personRepository postgre.PersonRepository) PersonLogic {
 	return &personLogicImpl{personRepository: personRepository}
 }
 
-func (l *personLogicImpl) GetAllPersons(criteriaDTO app.PersonSearchCriteriaDTO) []app.Person {
-	if persons := l.personRepository.GetAllPersons(criteriaDTO); persons != nil {
+func (l *personLogicImpl) GetAllPersons(ctx context.Context, criteriaDTO app.PersonSearchCriteriaDTO) []app.Person {
+	if persons := l.personRepository.GetAllPersons(ctx, criteriaDTO); persons != nil {
 		return persons
 	}
 	return make([]app.Person, 0)

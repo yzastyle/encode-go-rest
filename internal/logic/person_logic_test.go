@@ -2,6 +2,7 @@ package logic
 
 import (
 	//"fmt"
+	"context"
 	"log"
 	"math/rand"
 	"strconv"
@@ -46,7 +47,7 @@ func setUp() PersonLogic {
 func TestGetAllPersons(t *testing.T) {
 	personLogic := setUp()
 
-	persons := personLogic.GetAllPersons(app.PersonSearchCriteriaDTO{})
+	persons := personLogic.GetAllPersons(context.TODO(), app.PersonSearchCriteriaDTO{})
 
 	if len(persons) == 0 {
 		t.Error("Expected to get at least one person, but got zero")

@@ -2,6 +2,7 @@ package postgre
 
 import (
 	//"fmt"
+	"context"
 	"log"
 	"math/rand"
 	"strconv"
@@ -44,7 +45,7 @@ func setUp() PersonRepository {
 func TestGetAllPersons(t *testing.T) {
 	personRepository := setUp()
 
-	persons := personRepository.GetAllPersons(app.PersonSearchCriteriaDTO{})
+	persons := personRepository.GetAllPersons(context.TODO(), app.PersonSearchCriteriaDTO{})
 
 	if len(persons) == 0 {
 		t.Error("Expected to get at least one person, but got zero")

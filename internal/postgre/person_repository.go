@@ -1,6 +1,8 @@
 package postgre
 
 import (
+	"context"
+
 	"github.com/gocraft/dbr/v2"
 	logg "github.com/sirupsen/logrus"
 	"github.com/yzastyle/encode-go-rest/internal/app"
@@ -13,7 +15,7 @@ const (
 )
 
 type PersonRepository interface {
-	GetAllPersons(criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
+	GetAllPersons(ctx context.Context, criteriaDTO app.PersonSearchCriteriaDTO) []app.Person
 	GetPersonById(id string) *app.Person
 	CreatePerson(person *app.Person) error
 	UpdatePerson(person *app.Person) error
@@ -32,7 +34,7 @@ func NewPersonRepository(connection *dbr.Connection) PersonRepository {
 		queryBuilder: &QueryBuilder{}}
 }
 
-func (r *personRepositoryImpl) GetAllPersons(criteriaDTO app.PersonSearchCriteriaDTO) []app.Person {
+func (r *personRepositoryImpl) GetAllPersons(ctx context.Context, criteriaDTO app.PersonSearchCriteriaDTO) []app.Person {
 	log := r.logger.WithField("operation", "get_all")
 
 	var persons []app.Person

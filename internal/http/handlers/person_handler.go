@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"fmt"
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -29,15 +30,23 @@ type PersonHandler interface {
 type personHandlerImpl struct {
 	personLogic logic.PersonLogic
 	logger      *logg.Entry
+	timeout     time.Duration
 }
 
 func NewPersonHandler(l logic.PersonLogic) PersonHandler {
 	return &personHandlerImpl{personLogic: l,
-		logger: logger.NewRequestLogger()}
+		logger:  logger.NewRequestLogger(),
+		timeout: time.Duration(100)}
 }
 
 func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
+	duration := h.timeout * time.Millisecond
+	rootCtx := context.Background()
+
 	return func(c echo.Context) error {
+		ctx, cancel := context.WithTimeout(rootCtx, duration)
+		defer cancel()
+
 		log := h.logger.WithFields(logg.Fields{"request_id": uuid.New().String(),
 			"method": "GET",
 			"path":   constants.Persons})
@@ -50,9 +59,15 @@ func (h *personHandlerImpl) GetAllPersons() func(echo.Context) error {
 			log.WithError(err).Error("An error occurred while executing the request.")
 			return c.String(http.StatusBadRequest, "bad request")
 		}
-		fmt.Println(criteriaDto)
-		persons := h.personLogic.GetAllPersons(criteriaDto)
-		return c.JSON(http.StatusOK, persons)
+		persons := h.personLogic.GetAllPersons(ctx, criteriaDto)
+
+		select {
+		case <-ctx.Done():
+			log.Info("Time occurred while executing the request.")
+			return c.String(http.StatusRequestTimeout, "timeout")
+		default:
+			return c.JSON(http.StatusOK, persons)
+		}
 	}
 }
 
